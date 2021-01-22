@@ -1,0 +1,104 @@
+# 2 ===============================================================================
+function fn_fdms {
+case $1 in
+p9) model="B779STDYSCDPAN_04B";; 
+esac
+feadms -m $model -det 1_details/$2_abv.det.Z -set 2_loads/settings -o 2_loads/$1_$2_abv.dat
+feadms -m $model -det 1_details/$2_blw.det.Z -set 2_loads/settings -o 2_loads/$1_$2_blw.dat
+} 
+# 3 ===============================================================================
+function fn_mid {
+echo -e "Assign Conf 1\nAssign skinonly \"N\"" >> $f
+echo -e "Input FEADMS \"abv1\" \"2_loads/$1_$2_abv.dat\"" >> $f
+echo -e "Input FEADMS \"blw\"  \"2_loads/$1_$2_blw.dat\"\nCalculate" >> $f
+echo -e "Output Data \"3_midloads/$1_$2_mid.dta\"" >> $f
+echo -e "Output PDF Color \"3_midloads/$1_$2_mid.pdf\"\nClear Data" >> $f
+}
+# 4 ===============================================================================
+function fn_ms {
+# 5 ==========
+case $1 in
+p8) path="-8_scd_pan_04b";; p9) path="-9_scd_pan_04b";; s9) path="-9_scd_sed_04b";;  
+esac
+case $2 in
+af) name="aftedgefrm";; ai) name="aft_intercostal";; i1) name="intercostal1";; 
+ff) name="fwdedgefrm";; fi) name="fwd_intercostal";; i2) name="intercostal2";;
+i3) name="intercostal3";; i4) name="intercostal4";; mf) name="middle_frame";; 
+esac
+echo "Input Data \"famoss_ias_dataset/${path}/777${path}_${name}_famoss.dta\"" >> $f2
+echo "Input Data \"3_midloads/$1_$2_mid.dta\"" >> $f2
+# 6 ==========
+case $2 in 
+mf) sz=7;; i1|i2|i3|i4) sz=3;; *) sz=9;;
+esac
+echo "Size $sz 90 1" >> $f2
+# 7 ==========
+for ((i=1;i<=$sz;i++)); do
+echo "Case $i 90 1" >> $f2
+echo -e "Assign Sk_fast_type \"YNE6\"\nAssign sk_fast 0.188\nAssign sk_fast_num 1" >> $f2
+echo -e "Assign web_fast_type \"n/a\"\nAssign web_fast 0.188\nAssign web_fast_num 1" >> $f2
+echo -e "Assign K_bc 0.2" >> $f2;
+done
+# 8 ==========
+echo -e "Calculate\nOutput Data \"4_ms/$1_$2_stdy.dta\"" >> $f2
+echo -e "Output TableCSV \"Inner Chord Margin Summary\" \"4_ms/$1_$2_ic_stdy.csv\"" >> $f2
+echo -e "Output PDF Color \"4_ms/$1_$2_stdy.pdf\"\nClear Data" >> $f2
+}
+# 1 ===============================================================================
+f="tmp1"; f2="tmp2"; touch $f $f2
+echo -e "Echo\nInput Template \"3_midloads/frames-mid-bay-loads-template_revb.tem\"" > $f
+echo -e "Echo\nInput Template \"4_ms/famossmetal_ias_revx22.tem\"" > $f2
+
+#for part in af ai ff fi i1 i2 i3 i4 mf mfa mff; do
+for part in af; do
+# fn_fdms $v "p9" $part
+ fn_mid  $v "p9" $part
+ fn_ms   $v "p9" $part
+done
+# 9 ===============================================================================
+echo -e "Clear All\nExit" >> $f
+echo -e "Clear All\nExit" >> $f2
+ias -f $f; ias -f $f2; rm $f $f2
+# 10 ===============================================================================
+f3_old="4_ms/p9_af_ic_init.csv";
+f3_new="4_ms/p9_af_ic_stdy.csv"; f3_cmp="4_ms/p9_af_ic_cmp.csv"
+paste -d " " \
+<(awk -F"," '{print  $3}' $f3_old) <(awk -F"," '{print  $3}' $f3_new) \
+<(awk -F"," '{print  $6}' $f3_old) <(awk -F"," '{print  $6}' $f3_new) \
+<(awk -F"," '{print  $9}' $f3_old) <(awk -F"," '{print  $9}' $f3_new) \
+<(awk -F"," '{print $12}' $f3_old) <(awk -F"," '{print $12}' $f3_new) \
+> $f3_cmp
+# 11 ===============================================================================
+awk -F" " '
+BEGIN{ m1=m2=m3=m4=m5=m6=m7=m8=1000
+ print "======================================================================"
+ print "Inner Chord Margin Summary"
+ print "======================================================================"
+ printf "%5s %11s %3s %10s %4s %11s %3s %12s %2s\n", "Beam", "comp+sec", "|","tension","|","JohnEuler","|","comp+later","|"
+ print "--------------------+---------------+---------------+---------------+-"
+}
+NR==3,NR==11{ printf "%5s %6.2f %6.2f %1s %6.2f %6.2f %1s %6.2f %6.2f %1s %6.2f %6.2f %1s\n", \
+                     NR-2,   $1,   $2,"|",   $3,   $4,"|",   $5,   $6,"|",   $7,   $8,"|";
+# 12 ===============================================================================
+if ($1<m1) m1=$1 fi;if ($2<m2) m2=$2 fi;if ($3<m3) m3=$3 fi;if ($4<m4) m4=$4 fi
+if ($5<m5) m5=$5 fi;if ($6<m6) m6=$6 fi;if ($7<m7) m7=$7 fi;if ($8<m8) m8=$8 fi
+}END{
+ print "--------------------+---------------+---------------+---------------+-"
+ printf "%5s %6.2f %6.2f %1s %6.2f %6.2f %1s %6.2f %6.2f %1s %6.2f %6.2f %1s\n",
+       "min",   m1,   m2,"|",   m3,   m4,"|",   m5,   m6,"|",   m7,   m8,"|"
+ print "======================================================================"
+}' $f3_cmp
+#name conv: af/ff/mf - aft/fwd/middle frame; ai/fi/i1-aft/fwd/#1 intercostal; mfa/mff-aft/fwd mid-frame
+# variable $1 account for FEADMS model; $2 account for part (af,ai,..) 
+#  1 - analysis begin, creating 2 batch files for ias and write template names
+#  2 - run feadms in loop
+#  3 - add in 1st batch text about input & output in loop
+#  4 - add in 2nd batch text about input & output in loop 
+#  5 - 2nd: creating text about famoss library path
+#  6 - 2nd: switch-case that account for different case number for each detail 
+#  7 - 2nd: input geometry for each case in for-loop
+#  8 - 2nd: add text about output 
+#  9 - finish 1st and 2nd batch, run ias for both and remove both batches
+# 10 - creating comparision file (f3_cmp)
+# 11 - formating f3_cmp.csv
+# 12 - find minimum in f3_cmp.csv
