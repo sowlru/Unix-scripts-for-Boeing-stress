@@ -1,0 +1,73 @@
+analyst houck      294-4605   b-yb30      /
+form both       pout summary    fem /
+model 747-8F sr                                                                /
+location boxxxxxx JUN08    /
+detail element# element  /
+material aluminum    mode tension  frf 1.500    dfr  16.00   /
+feadms filea ../2_loads/load1d.dat /
+length   1370.0 lgoal  20000.0 altitude       .0  /
+unl  ss   L100101 1.0         1.000       .0 /
+mto  2nmm L100102 L150102 L160102 mt           .365       .0 /
+pfl  ss   L100201 udconck     1.000       .0 /
+tto  2nmm L100311 L150311 L160311 udtrnto     1.000       .0 /
+sto  2nmm L100302 L150302 L160302 udsttow     1.000       .0 /
+dtt  2nmm L100401 L150401 L160401 dttwa       1.000       .0 /
+gt1  2nmm L100521 L150521 L160521 2.0         1.000       .0 /
+gsl  2nmm L100512 L150522 L160522 2.0         1.000       .0 /
+brk  2nbr L100601 L150601 L160601 lndbrk      1.000       .0 /
+prt  ma   [prt] [prtalt] mdpretx     1.000       .0 /
+eru  ss   L100801 1.0         1.000       .0 /
+tkr  mm   L100836 L100846 mdtkofrl    1.000       .0 /
+rot  ss2  L100901 L100902 1.0         1.000       .0 /
+lft  ss   L171001 1.0         1.000       .0 /
+lgr  ss2p L101101 L101102 [0.5p] 1.0         1.000   1000.0 /
+fd1  1mp  L101201 [0.5p] L111201 flpexm       .500   1000.0 /
+fd2  1mp  L101204 [0.5p] L111204 flpexm       .500   1000.0 /
+eng  2pmm L102701 [0.5p] L152701 L162701 mdengout    1.000   1000.0 /
+fre  ss3p L101301 L101305 L101302 [0.5p] 1.0         1.000   1000.0 /
+fre  ss2p L101303 L101304 [0.5p] 1.0         1.000   1000.0 /
+icv  2pmg L101401 [1.38p] L421406 L421407 gc          7.700   3000.0 /
+ich  2pmg L101401 [1.38p] L431406 L431407 gc          7.700   3000.0 /
+fcv  2pmg L101501 [6.34p] L421506 L421507 gc         102.00  18000.0 /
+fch  2pmg L101501 [6.34p] L431506 L431507 gc         102.00  18000.0 /
+cr1  1mp  L101601 [8.90p] L111601 flpstm       .581  35000.0 /
+cv1  2pmg L101601 [8.90p] L421606 L421607 gc         654.90  35000.0 /
+ch1  2pmg L101601 [8.90p] L431606 L431607 gc         654.90  35000.0 /
+sv1  2pmg L101511 [8.90p] L421516 L421517 gc          15.30  35000.0 /
+sh1  2pmg L101511 [8.90p] L431516 L431517 gc          15.30  35000.0 /
+cr2  1mp  L101611 [8.90p] L111611 flpstm       .419  35000.0 /
+cv2  2pmg L101611 [8.90p] L421616 L421617 gc         473.10  35000.0 /
+ch2  2pmg L101611 [8.90p] L431616 L431617 gc         473.10  35000.0 /
+dv1  2pmg L101701 [8.54p] L421706 L421707 gc          25.80  32565.0 /
+dh1  2pmg L101701 [8.54p] L431706 L431707 gc          25.80  32565.0 /
+dv2  2pmg L101721 [6.96p] L421726 L421727 gc          37.00  20815.0 /
+dh2  2pmg L101721 [6.96p] L431726 L431727 gc          37.00  20815.0 /
+spo  1mp  L101731 [3.90p] L101732 upspoilr    1.000   9500.0 /
+dv3  2pmg L101731 [3.90p] L421736 L421737 gc          41.30   9500.0 /
+dh3  2pmg L101731 [3.90p] L431736 L431737 gc          41.30   9500.0 /
+fdv  2pmg L101801 [1.38p] L421806 L421807 gc          10.00   3000.0 /
+fdh  2pmg L101801 [1.38p] L431806 L431807 gc          10.00   3000.0 /
+fpe  ss3p L101901 L101902 L101903 [0.5p] 1.0         1.000   1000.0 /
+fpe  ss2p L101904 L101905 [0.5p] 1.0         1.000   1000.0 /
+fa1  1mp  L102001 [0.5p] L112001 flpexm       .500   1000.0 /
+fa2  1mp  L102004 [0.5p] L112004 flpexm       .500   1000.0 /
+rll  rymm L102001 [0.5p] L152101 L182101 L162101 L192101 
+          udrollm     1.000   1000.0 /
+yaw  rymm L102001 [0.5p] L152201 L182201 L162201 L192201 
+          mdyaw       1.000   1000.0 /
+lge  ss2p L102301 L102302 [0.5p] 1.0         1.000   1000.0 /
+fla  ss   L172401 1.0         1.000       .0 /
+bsp  mm   L152516 L152526 udlimp      1.000       .0 /
+wsp  mm   L152536 L152546 udlimp      1.000       .0 /
+drl  2nmm L102502 L152502 L162502 uddrfld     1.000       .0 /
+als  mm   L152503 L162503 mdldsp2     1.000       .0 /
+nsp  mm   L152556 L152566 udlimp      1.000       .0 /
+buf  bfma L102601 [0p] L152601 L152602 L162601 L162602 
+          mdlbuff     1.000       .0 /
+lrt  mm   L102636 L102646 mdlrevs     1.000       .0 /
+lit  mm   L102656 L102666 mdlidle     1.000       .0 /
+pst  ma   [pst] [pstalt] mdpsttx     1.000       .0 /
+zro  ss   [0p] 1.0         1.000       .0 /
+endflt /
+endde /
+eoi /
